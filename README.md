@@ -7,6 +7,7 @@
 1. 删除 typora 本地无用的图片
 2. 实现 Markdown 标题自动编号
 3. 图片同步至阿里云 OSS 图床
+4. 将同步后的笔记内容复制到粘贴板中
 
 # 如何使用？
 
@@ -29,4 +30,8 @@ accessKeyId=<输入你的 accessKeyId>
 accessKeySecret=<输入你的 accessKeySecret>
 bucketDomain=<输入你的 bucketDomain>
 ```
+
+将 Java 程序打包成可执行 jar 包，并根据 jar 包存放路径修改【typora-tools.bat】批处理程序，
+
+最后执行【!添加∕删除右键菜单.bat】批处理程序将此工具添加到右键菜单栏中
 
