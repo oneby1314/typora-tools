@@ -4,6 +4,7 @@ import com.heygo.typora.config.OSSConfig;
 import com.heygo.typora.config.TyporaToolConfig;
 import com.heygo.typora.util.*;
 
+import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,15 @@ public class TyporaTools {
     public static void main(String[] args) {
 
         // 笔记存储根目录
-        String noteRootPath = TyporaToolConfig.getTyporaToolConfig().getNoteRootPath();
+        String noteRootPath = null;
+
+        if (args != null && args.length > 0) {
+            noteRootPath = args[0];
+            System.out.println(noteRootPath);
+        } else {
+            noteRootPath = TyporaToolConfig.getTyporaToolConfig().getNoteRootPath();
+        }
+
 
         // 根据配置需要，执行 Typora 文件瘦身、标题自动编号、图片同步至 OSS 等功能
         doMainBusiness(noteRootPath);
@@ -107,6 +116,11 @@ public class TyporaTools {
 
         // 执行保存
         TyporaFileRwUtil.SaveMdContentToFile(destMdFile.getPath(), mdFileContent);
+
+        // 将笔记内容保存至粘贴板
+        ClipboardUtil.setClipboardString(mdFileContent);
+
+        System.out.println("笔记内容已经复制到您的粘贴板");
     }
 
 
