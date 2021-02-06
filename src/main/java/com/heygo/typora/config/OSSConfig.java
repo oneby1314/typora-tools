@@ -27,6 +27,9 @@ public class OSSConfig {
     private String accessKeySecret;
     private String bucketDomain;
 
+    // 图片水印参数
+    private String waterMarkParams;
+
     // 单例对象
     private static OSSConfig ossConfig;
 
@@ -45,6 +48,7 @@ public class OSSConfig {
             ossConfig.setAccessKeyId(prop.getProperty("accessKeyId"));
             ossConfig.setAccessKeySecret(prop.getProperty("accessKeySecret"));
             ossConfig.setBucketDomain(prop.getProperty("bucketDomain"));
+            ossConfig.setWaterMarkParams(prop.getProperty("waterMarkParams"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("配置文件有点问题，你去检查下哦~~~");

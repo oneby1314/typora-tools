@@ -24,6 +24,7 @@ public class TyporaToolConfig {
     private  boolean isNeedCleanPic; // 是否需要进行图片清理
     private  boolean isNeedTiltleAutoNo; // 是否需要进行标题编号
     private  boolean isNeedPicSyncOSS; // 是否需要进行图片同步
+    private  boolean isNeedWaterMark; // 是否需要为图片添加水印
     private  String noteRootPath; // 笔记的根目录（也可以填入单个的 .md 文件）
 
     // 单例对象
@@ -42,6 +43,7 @@ public class TyporaToolConfig {
             typoraToolConfig.isNeedCleanPic = Boolean.parseBoolean(prop.getProperty("isNeedCleanPic"));
             typoraToolConfig.isNeedTiltleAutoNo = Boolean.parseBoolean(prop.getProperty("isNeedTiltleAutoNo"));
             typoraToolConfig.isNeedPicSyncOSS = Boolean.parseBoolean(prop.getProperty("isNeedPicSyncOSS"));
+            typoraToolConfig.isNeedWaterMark = Boolean.parseBoolean(prop.getProperty("isNeedWaterMark"));
             typoraToolConfig.setNoteRootPath(prop.getProperty("noteRootPath"));
         } catch (IOException e) {
             e.printStackTrace();

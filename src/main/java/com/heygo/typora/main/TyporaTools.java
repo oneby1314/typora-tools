@@ -117,6 +117,13 @@ public class TyporaTools {
         // 执行保存
         TyporaFileRwUtil.SaveMdContentToFile(destMdFile.getPath(), mdFileContent);
 
+        // 添加图片水印
+        if (TyporaToolConfig.getTyporaToolConfig().isNeedWaterMark() == true) {
+            // 获取图片带水印的 Markdown 文档
+            mdFileContent = OSSWaterMarkUtil.getWaterMarkMdContent(mdFileContent);
+
+        }
+
         // 将笔记内容保存至粘贴板
         ClipboardUtil.setClipboardString(mdFileContent);
 

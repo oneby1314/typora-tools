@@ -61,13 +61,12 @@ public class TyporaTiltleAutoNoUtil {
                     // 这里处理代码块的逻辑有 Bug ，很奇怪，Debug 明明显示我的 Markdown 文本是对的。。。
 
                     // 如果已经在代码块内，该判断这次的 ``` 是否需要结束此代码块
-                    if(isCodeBLock == true){
-                        if(spaceCount == (curLine.length() - (curLine + "S").trim().length() + 1)){
+                    if (isCodeBLock == true) {
+                        if (spaceCount == (curLine.length() - (curLine + "S").trim().length() + 1)) {
                             isCodeBLock = !isCodeBLock;
                             spaceCount = 0;
                         }
-                    }
-                    else{
+                    } else {
                         // 否则为新代码块的开始，记录 ``` 前面有几个空格
                         isCodeBLock = !isCodeBLock;
                         spaceCount = curLine.length() - (curLine + "S").trim().length() + 1;
@@ -209,13 +208,10 @@ public class TyporaTiltleAutoNoUtil {
         // 寻找标题中的 、 字符
         Integer index = curLine.indexOf("、");
 
-        if (index > 0 && index < 6) {
-
+        if (index > 0) {
             // 之前已经进行过标号
             return curLine.substring(index + 1);
-
         } else {
-
             // 之前未进行过标号，直接返回
             return curLine;
         }

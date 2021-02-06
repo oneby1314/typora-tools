@@ -65,7 +65,6 @@ public class TyporaOSSPicSyncUtil {
                 // 图片路径存储格式：![image-20200711220145723](https://heygo.oss-cn-shanghai.aliyuncs.com/Software/Typora/Typora_PicGo_CSDN.assets/image-20200711220145723.png)
                 // 正则表达式
                 /*
-                    ^$：匹配一行的开头和结尾
                     \[.*\]：![image-20200711220145723]
                         . ：匹配任意字符
                         * ：出现0次或多次
