@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
@@ -42,7 +43,8 @@ public class OSSConfig {
         try (
             InputStream is = TyporaToolConfig.class.getClassLoader().getResourceAsStream("typora-tool.properties");
         ){
-            prop.load(is);
+            // 指定 "UTF-8" 编码解决乱码问题
+            prop.load(new InputStreamReader(is, "UTF-8"));
             ossConfig.setEndPoint(prop.getProperty("endPoint"));
             ossConfig.setBucketName(prop.getProperty("bucketName"));
             ossConfig.setAccessKeyId(prop.getProperty("accessKeyId"));
