@@ -43,7 +43,7 @@ public class TyporaOSSPicSyncUtil {
     private static String changeLocalReferToUrlRefer(File[] allPicFiles, String mdFileContent) {
 
         // 存储md文件内容
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         // 当前行内容
         String curLine;
@@ -57,85 +57,74 @@ public class TyporaOSSPicSyncUtil {
             allPicNames.add(curPicName);
         }
 
-        try (
-                StringReader sr = new StringReader(mdFileContent);
-                BufferedReader br = new BufferedReader(sr);
-        ) {
-            while ((curLine = br.readLine()) != null) {
-                // 图片路径存储格式：![image-20200711220145723](https://heygo.oss-cn-shanghai.aliyuncs.com/Software/Typora/Typora_PicGo_CSDN.assets/image-20200711220145723.png)
-                // 正则表达式
-                /*
-                    \[.*\]：![image-20200711220145723]
-                        . ：匹配任意字符
-                        * ：出现0次或多次
-                    \(.+\)：(https://heygo.oss-cn-shanghai.aliyuncs.com/Software/Typora/Typora_PicGo_CSDN.assets/image-20200711220145723.png)
-                        . ：匹配任意字符
-                        + ：出现1次或多次
-                 */
-                String regex = "!\\[.*\\]\\(.+\\)";
+        // 图片路径存储格式：![image-20200711220145723](https://heygo.oss-cn-shanghai.aliyuncs.com/Software/Typora/Typora_PicGo_CSDN.assets/image-20200711220145723.png)
+        // 正则表达式
+        /*
+            \[.*\]：![image-20200711220145723]
+                . ：匹配任意字符
+                * ：出现0次或多次
+            \(.+\)：(https://heygo.oss-cn-shanghai.aliyuncs.com/Software/Typora/Typora_PicGo_CSDN.assets/image-20200711220145723.png)
+                . ：匹配任意字符
+                + ：出现1次或多次
+            (!\[.*\]) 为 $1，\(.+\) 为 $2
+         */
+        String regex = "(!\\[.*\\])\\((.+)\\)";
 
-                // 执行正则表达式
-                Matcher matcher = Pattern.compile(regex).matcher(curLine);
+        // 执行正则表达式
+        Matcher matcher = Pattern.compile(regex).matcher(mdFileContent);
 
-                // 是否匹配到图片路径
-                boolean isPicUrl = matcher.find();
+        try {
+            // 如果找到了图片链接，直接干他
+            while (matcher.find()) {
+                // group0 是整个正则表达式，也就是说 () 匹配的 group 编号从 1 开始
+                String picUrl = matcher.group(2);
 
-                // 如果当前行是图片链接，干他
-                if (isPicUrl) {
+                // 检查图片是否已经是网络 URL 引用，如果已经是网络 URL 引用，则不需做任何操作
+                Boolean isOSSUrl = picUrl.contains("http://") || picUrl.contains("https://");
+                if (!isOSSUrl) {
 
-                    // 检查图片是否已经是网络 URL 引用，如果已经是网络 URL 引用，则不需做任何操作
-                    Boolean isOSSUrl = curLine.contains("http://") || curLine.contains("https://");
-                    if (!isOSSUrl) {
+                    // 获取图片名称
+                    Integer picNameStartIndex = picUrl.lastIndexOf("/");
+                    String picName = picUrl.substring(picNameStartIndex + 1, picUrl.length());
 
-                        // 提取图片路径前面不变的部分
-                        Integer preStrEndIndex = curLine.indexOf("(");
-                        String preStr = curLine.substring(0, preStrEndIndex + 1);
+                    // 拿到 URl 在 List 中的索引
+                    Integer picIndex = allPicNames.indexOf(picName);
 
-                        // 获取图片名称
-                        Integer picNameStartIndex = curLine.lastIndexOf("/");
-                        Integer curLineLength = curLine.length();
-                        String picName = curLine.substring(picNameStartIndex + 1, curLineLength - 1);
+                    // 如果图片是真实存在于本地磁盘上的
+                    if (picIndex != -1) {
 
-                        // 拿到 URl 在 List 中的索引
-                        Integer picIndex = allPicNames.indexOf(picName);
+                        // 拿到待上传的图片 File 对象
+                        File needUploadPicFile = allPicFiles[picIndex];
 
-                        // 如果图片是真实存在于本地磁盘上的
-                        if (picIndex != -1) {
+                        // 检查 OSS 上是否已经有该图片的 URL
+                        String picOSSUrl = findPicOnOSS(needUploadPicFile);
 
-                            // 拿到待上传的图片 File 对象
-                            File needUploadPicFile = allPicFiles[picIndex];
-
-                            // 检查 OSS 上是否已经有该图片的 URL
-                            String picOSSUrl = findPicOnOSS(needUploadPicFile);
-
-                            // 在 OSS 上找不到才执行上传
-                            if (picOSSUrl == "") {
-                                // 执行上传
-                                picOSSUrl = uploadPicToOSS(needUploadPicFile);
-                            }
-
-                            // 拼接得到 typora 中的图片链接
-                            curLine = preStr + picOSSUrl + ")";
-
-                            // 打印输出日志
-                            System.out.println("修改图片连接：" + curLine);
+                        // 在 OSS 上找不到才执行上传
+                        if (picOSSUrl == "") {
+                            // 执行上传
+                            picOSSUrl = uploadPicToOSS(needUploadPicFile);
                         }
 
+                        // 执行正则替换
+                        matcher.appendReplacement(sb, "$1(" + picOSSUrl + ")");
+
+                        // 打印输出日志
+                        System.out.println("修改图片连接：" + picOSSUrl);
                     }
                 }
-
-                sb.append(curLine + "\r\n");
             }
+            // 添加上剩余部分并返回
+            matcher.appendTail(sb);
             return sb.toString();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
-
     }
 
     /**
      * 上传图片至阿里云 OSS 服务器
+     *
      * @param curPicFile 图片 File 对象
      * @return 图片上传后的 URL 地址
      */
@@ -186,6 +175,7 @@ public class TyporaOSSPicSyncUtil {
 
     /**
      * 在 OSS 服务器上查找是否存在目标图片
+     *
      * @param curPicFile 目标图片
      * @return 图片的网络路径：如果为""，则表示图片不存在于 OSS 服务器上；如果不为""，则表示图片在 OSS 上的路径
      */

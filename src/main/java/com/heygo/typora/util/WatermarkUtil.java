@@ -37,6 +37,12 @@ public class OSSWaterMarkUtil {
         String regex = "(!\\[.*\\])(\\(.+)\\)";
         // 执行正则表达式
         Matcher matcher = Pattern.compile(regex).matcher(originMdContent);
+
+        while (){
+            
+        }
+
+
         String waterMarkMdContent = matcher.replaceAll("$1" + "$2" + OSSConfig.getOSSConfig().getWaterMarkParams() + ")");
         return waterMarkMdContent;
     }
