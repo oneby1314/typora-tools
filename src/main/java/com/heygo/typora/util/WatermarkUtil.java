@@ -38,9 +38,31 @@ public class WatermarkUtil {
         String regex = "(!\\[.*\\])(\\(.+)\\)";
         // 执行正则表达式
         Matcher matcher = Pattern.compile(regex).matcher(originMdContent);
-        String waterMarkMdContent = matcher.replaceAll("$1" + "$2" + OSSConfig.getOSSConfig().getWaterMarkParams() + ")");
 
-        return waterMarkMdContent;
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            // 如果找到了图片链接，直接干他
+            while (matcher.find()) {
+                // group0 是整个正则表达式，也就是说 () 匹配的 group 编号从 1 开始
+                String picUrl = matcher.group(2);
+
+                // 检查图片是否已经是网络 URL 引用，如果已经是网络 URL 引用，则不需做任何操作
+                Boolean isGif = picUrl.contains("gif");
+
+                // 不对 Gif 做任何处理
+                if(isGif == false){
+                    matcher.appendReplacement(sb, "$1" + "$2" + OSSConfig.getOSSConfig().getWaterMarkParams() + ")");
+                }
+
+            }
+            // 添加上剩余部分并返回
+            matcher.appendTail(sb);
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 }
