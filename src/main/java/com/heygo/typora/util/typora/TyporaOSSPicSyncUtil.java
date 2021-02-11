@@ -1,7 +1,8 @@
-package com.heygo.typora.util;
+package com.heygo.typora.util.typora;
 
 import com.Entity.ResultEntity;
 import com.heygo.typora.config.OSSConfig;
+import com.heygo.typora.util.common.AliyunOSSUtil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -147,7 +148,7 @@ public class TyporaOSSPicSyncUtil {
             String curFileName = curPicFile.getName();
 
             // 执行上传
-            ResultEntity<String> resultEntity = OSSUtil.uploadFileToOss(
+            ResultEntity<String> resultEntity = AliyunOSSUtil.uploadFileToOss(
                     ossConfig.getEndPoint(),
                     ossConfig.getAccessKeyId(),
                     ossConfig.getAccessKeySecret(),
@@ -191,7 +192,7 @@ public class TyporaOSSPicSyncUtil {
         String fileName = curPicFile.getName();
 
         // 判断是否存在于 OSS 中
-        Boolean isExist = OSSUtil.isFileExitsOnOSS(
+        Boolean isExist = AliyunOSSUtil.isFileExitsOnOSS(
                 ossConfig.getEndPoint(),
                 ossConfig.getAccessKeyId(),
                 ossConfig.getAccessKeySecret(),

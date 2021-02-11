@@ -1,4 +1,4 @@
-package com.heygo.typora.util;
+package com.heygo.typora.util.common;
 
 import com.Entity.ResultEntity;
 import com.aliyun.oss.OSS;
@@ -11,7 +11,7 @@ import java.io.InputStream;
 /**
  * OSS 工具类
  */
-public class OSSUtil {
+public class AliyunOSSUtil {
 
     /**
      * 上传文件至 OSS 服务器

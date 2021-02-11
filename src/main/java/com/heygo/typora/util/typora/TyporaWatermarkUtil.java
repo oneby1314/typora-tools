@@ -1,4 +1,4 @@
-package com.heygo.typora.util;
+package com.heygo.typora.util.typora;
 
 import com.heygo.typora.config.OSSConfig;
 import com.heygo.typora.config.TyporaToolConfig;
@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @Date 2021/2/5 19:00
  * @Version 1.0
  */
-public class WatermarkUtil {
+public class TyporaWatermarkUtil {
 
     /*** 
      * @description: 给 md 文件中的图片加上水印
@@ -51,7 +51,7 @@ public class WatermarkUtil {
                 Boolean isGif = picUrl.contains("gif");
 
                 // 不对 Gif 做任何处理
-                if(isGif == false){
+                if (isGif == false) {
                     matcher.appendReplacement(sb, "$1" + "$2" + OSSConfig.getOSSConfig().getWaterMarkParams() + ")");
                 }
 

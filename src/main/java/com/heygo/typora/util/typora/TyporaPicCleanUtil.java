@@ -1,4 +1,4 @@
-package com.heygo.typora.util;
+package com.heygo.typora.util.typora;
 
 import java.io.File;
 import java.util.ArrayList;

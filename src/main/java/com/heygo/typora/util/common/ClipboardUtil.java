@@ -1,4 +1,4 @@
-package com.heygo.typora.util;
+package com.heygo.typora.util.common;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

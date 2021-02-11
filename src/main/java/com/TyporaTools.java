@@ -1,15 +1,14 @@
-package com.heygo.typora.main;
+package com;
 
-import com.heygo.typora.config.OSSConfig;
 import com.heygo.typora.config.TyporaToolConfig;
-import com.heygo.typora.util.*;
+import com.heygo.typora.util.common.ClipboardUtil;
+import com.heygo.typora.util.typora.TyporaWatermarkUtil;
+import com.heygo.typora.util.typora.TyporaFileRwUtil;
+import com.heygo.typora.util.typora.TyporaOSSPicSyncUtil;
+import com.heygo.typora.util.typora.TyporaPicCleanUtil;
+import com.heygo.typora.util.typora.TyporaTiltleAutoNoUtil;
 
-import javax.sound.midi.Soundbank;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @ClassName TyporaTools
@@ -117,17 +116,17 @@ public class TyporaTools {
         // 执行保存
         TyporaFileRwUtil.SaveMdContentToFile(destMdFile.getPath(), mdFileContent);
 
-        // 添加图片水印
+        // 获取图片带水印的 Markdown 文档
         if (TyporaToolConfig.getTyporaToolConfig().isNeedWaterMark() == true) {
-            // 获取图片带水印的 Markdown 文档
-            mdFileContent = OSSWaterMarkUtil.getWaterMarkMdContent(mdFileContent);
-
+            System.out.println(destMdFile.getName() + " 开始添加图片水印~~~");
+            mdFileContent = TyporaWatermarkUtil.getWaterMarkMdContent(mdFileContent);
+            System.out.println(destMdFile.getName() + " 图片水印添加完毕~~~");
+            System.out.println();
         }
 
         // 将笔记内容保存至粘贴板
         ClipboardUtil.setClipboardString(mdFileContent);
-
-        System.out.println("笔记内容已经复制到您的粘贴板");
+        System.out.println(destMdFile.getName() + " 已经复制到粘贴板");
     }
 
 
